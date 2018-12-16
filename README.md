@@ -9,6 +9,25 @@ Cool features:
 * VC integration
 * Preview
 
+## Keybindings
+
+* `C-c C-b` – browse this page in a web browser
+* `C-c C-c` – post the changes you made
+* `C-c C-e` – edit a page
+* `C-c C-f` – follow a link
+* `C-c C-h` – look at the history of the page you are editing
+* `C-c C-i` – insert an existing page name (avoiding typos)
+* `C-c C-m` – toggle posting minor changes (often people will make a big change and continue fixing later typos using minor changes)
+* `C-c C-n` – create a new page with the current date as the default page name (useful for blogging)
+* `C-c C-p` – preview the current page
+* `C-c C-r` – list recent changes to the wiki
+* `C-c C-s` – search the wiki
+* `C-c C-t` – insert HTML tag
+* `C-x C-v` – revert your changes
+* `C-x v l` – look at /all/ past changes of the page you are editing
+* `C-x v =` – look at the diff of what you will be posting
+* `C-x v u` – revert you changes
+
 ## Typical Setup
 
 ```
