@@ -1,0 +1,25 @@
+oddmuse-curl.el is based on oddmuse.el. The page was created
+2007-11-08, according to its history.
+http://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=oddmuse-curl.el
+
+oddmuse.el's history is also available from the wiki.
+http://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=oddmuse.el
+
+As you can see, rubikitch is the only person that made any changes to oddmuse-curl.el up to and including 2007-11-08. A patch by Stefan Kamphausen is mentioned for 2007-10-27 and "all code" from the OddmuseMode page is mentioned for 2007-01-14.
+http://www.emacswiki.org/emacs?action=rc;all=1;from=1;showedit=1;rcidonly=OddmuseMode
+
+Examining the changes up that day yields the following editors which
+may or may not have contributed changes:
+
+Alex Schroeder <alex@gnu.org>
+rubikitch <rubikitch@ruby-lang.org>
+Stefan Kamphausen <web@skamphausen.de>
+Edward O'Connor <hober0@gmail.com>
+Adrian Aichner <adrian.aichner@xemacs.org>
+Trent Buck <trentbuck@gmail.com>
+Aaron Hawley <aaron.s.hawley@gmail.com>
+Xavier Maillard <xma@gnu.org>
+Nikolaj Schumacher <bugs@nschum.de>
+
+Saddly, the mirror on GitHub started with an import on 2009-08-30, so
+no data is available from 2007 and before.
