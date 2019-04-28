@@ -836,6 +836,7 @@ both the character before and after point have it, don't break."
 (define-key oddmuse-mode-map (kbd "C-c C-e") 'oddmuse-edit)
 (define-key oddmuse-mode-map (kbd "C-c C-f") 'oddmuse-follow)
 (define-key oddmuse-mode-map (kbd "C-c C-i") 'oddmuse-insert-pagename)
+(define-key oddmuse-mode-map (kbd "C-c C-y") 'oddmuse-insert-link)
 (define-key oddmuse-mode-map (kbd "C-c C-l") 'oddmuse-match)
 (define-key oddmuse-mode-map (kbd "C-c C-m") 'oddmuse-toggle-minor)
 (define-key oddmuse-mode-map (kbd "C-c C-n") 'oddmuse-new)
@@ -868,6 +869,49 @@ both the character before and after point have it, don't break."
 Replaces _ with spaces again."
   (interactive (list (oddmuse-read-pagename oddmuse-wiki)))
   (insert (replace-regexp-in-string "_" " " pagename)))
+
+(defun oddmuse-link-p (url)
+  "Return URL if URL is a string containing an URL."
+  (and (stringp url)
+       (string-match (concat "^" goto-address-url-regexp "$") url)
+       url))
+
+(defun oddmuse-get-title-and-insert-link (url buf point)
+  "Get the title for URL and insert link.
+This fetches the URL asynchronously and inserts the link."
+  (url-retrieve url 'oddmuse-insert-link-callback (list url buf point)))
+
+(defun oddmuse-insert-link-callback (status url buf point)
+  "Callback for `oddmuse-get-title-and-insert-link'."
+  (when (re-search-forward "<title>\\(.*\\)</title>" nil t)
+    (let ((title (match-string 1)))
+      ;; replace some HTML escapes
+      (while (string-match "&#\\([0-9]+\\);" title)
+	(setq title (replace-regexp-in-string
+		     (match-string 0 title)
+		     (char-to-string
+		      (string-to-number
+		       (match-string 1 title)))
+		     title)))
+      (save-excursion
+	(with-current-buffer buf
+	  (goto-char point)
+	  (insert (format "[%s %s]" url title)))))))
+  
+;;;###autoload
+(defun oddmuse-insert-link (&optional url title)
+  "Insert an Oddmuse link.
+The link is taken from the optional URL argument, point (using
+`ffap-url-at-point') or the clipboard or kill-ring (using
+`current-kill')."
+  (interactive)
+  (or (oddmuse-link-p url)
+      (when (setq url (ffap-url-at-point))
+	(apply 'delete-region ffap-string-at-point-region)
+	url)
+      (setq url (oddmuse-link-p (current-kill 0 t)))
+      (read-string "URL: "))
+  (oddmuse-get-title-and-insert-link url (current-buffer) (point)))
 
 ;;; Major functions
 
