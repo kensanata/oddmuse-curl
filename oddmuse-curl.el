@@ -528,8 +528,10 @@ we find any, that will get reported."
 	     (if (string-match "<h1>\\(.*\\)</h1>" status)
 		 (error "Error %s: %s" mesg (match-string 1 status))
 	       (error "Error %s: Cause unknown" status)))
+	    ((string-match "^000" status)
+	     (error "Strange error: %s" status))
 	    (t
-	     (message "%s...done" mesg))))))
+	     (message "%s...done (%s)" mesg status))))))
 
 (defun oddmuse-make-completion-table (wiki)
   "Create pagename completion table for WIKI.
