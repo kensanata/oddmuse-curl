@@ -1,10 +1,10 @@
 ;;; oddmuse-curl.el -- edit pages on an Oddmuse wiki using curl
 ;; 
-;; Copyright (C) 2006–2015  Alex Schroeder <alex@gnu.org>
+;; Copyright (C) 2006–2019  Alex Schroeder <alex@gnu.org>
 ;;           (C) 2007  rubikitch <rubikitch@ruby-lang.org>
 ;; 
 ;; Latest version:
-;;   http://git.savannah.gnu.org/cgit/oddmuse.git/plain/contrib/oddmuse-curl.el
+;;   https://alexschroeder.ch/cgit/oddmuse-curl/
 ;; Discussion, feedback:
 ;;   http://www.emacswiki.org/wiki/OddmuseCurl
 ;; 
@@ -444,6 +444,14 @@ It's either a [[free link]] or a WikiWord based on
 
 ;;; processing the commands
 
+(defun oddmuse-quote (string)
+  "Quote STRING for use in shell commands."
+  (if (and (stringp string)
+	   (string-match "'" string))
+      ;; form summary='A quote is '"'"' this!'
+      (replace-regexp-in-string "'" "'\"'\"'" string t t)
+    string))
+
 (defun oddmuse-format-command (command)
   "Format COMMAND, replacing placeholders with variables.
 
@@ -474,14 +482,10 @@ It's either a [[free link]] or a WikiWord based on
 	   (sym (cdr pair))
 	   value)
       (when (boundp sym)
-	(setq value (symbol-value sym))
+	(setq value (oddmuse-quote (symbol-value sym)))
 	(when (eq sym 'oddmuse-minor)
 	  (setq value (if value "on" "off")))
 	(when (stringp value)
-	  (when (and (eq sym 'summary)
-		     (string-match "'" value))
-	    ;; form summary='A quote is '"'"' this!'
-	    (setq value (replace-regexp-in-string "'" "'\"'\"'" value t t)))
 	  (setq command (replace-regexp-in-string key value command t t))))))
   (replace-regexp-in-string "&" "%26" command t t))
 
