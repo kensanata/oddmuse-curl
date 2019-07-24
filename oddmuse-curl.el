@@ -997,13 +997,15 @@ and call `oddmuse-edit' on it."
 The current wiki is taken from `oddmuse-wiki'.
 Use a prefix argument to override this."
   (interactive "sSummary: ")
+  ;; save before setting any local variables
+  (if buffer-file-name
+      (basic-save-buffer)
+    (write-file (make-temp-file "oddmuse")))
+  ;; set oddmuse-wiki and oddmuse-page-name
   (oddmuse-set-missing-variables current-prefix-arg)
   (let ((list (gethash oddmuse-wiki oddmuse-pages-hash)))
     (when (not (member oddmuse-page-name list))
       (puthash oddmuse-wiki (cons oddmuse-page-name list) oddmuse-pages-hash)))
-  (if buffer-file-name
-      (basic-save-buffer)
-    (write-file (make-temp-file "oddmuse")))
   (let ((filename buffer-file-name))
     ;; bind the current filename to `filename' so that it will get
     ;; picked up by `oddmuse-post-command'
