@@ -212,7 +212,7 @@ This is the default for `oddmuse-minor'."
 
 (defvar oddmuse-pages-hash (make-hash-table :test 'equal)
   "The wiki-name / pages pairs.
-Refresh using \\[oddmuse-reload].")
+Refresh using \\[oddmuse-reload-index].")
 
 ;;; Important buffer local variables
 
@@ -537,9 +537,9 @@ we find any, that will get reported."
   "Create pagename completion table for WIKI.
 If available, return precomputed one."
   (or (gethash wiki oddmuse-pages-hash)
-      (oddmuse-reload wiki)))
+      (oddmuse-reload-index wiki)))
 
-(defun oddmuse-reload (&optional wiki-arg)
+(defun oddmuse-reload-index (&optional wiki-arg)
   "Really fetch the list of pagenames from WIKI.
 This command is used to reflect new pages to `oddmuse-pages-hash'."
   (interactive)
@@ -939,7 +939,7 @@ WIKI is the name of the wiki as defined in `oddmuse-wikis',
 PAGENAME is the pagename of the page you want to edit. If the
 page is already in a buffer, pop to that buffer instead of
 loading the page Use a prefix argument to force a reload of the
-page. Use \\[oddmuse-reload] to reload the list of pages
+page. Use \\[oddmuse-reload-index] to reload the list of pages
 available if you changed the URL in `oddmuse-wikis' or if other
 people have been editing the wiki in the mean time."
   (interactive (oddmuse-pagename))
@@ -967,6 +967,17 @@ people have been editing the wiki in the mean time."
       (oddmuse-mode))))
 
 (defalias 'oddmuse-go 'oddmuse-edit)
+
+(defun oddmuse-reload-page ()
+  "Reload the current page."
+  (interactive)
+  (unless (eq major-mode 'oddmuse-mode)
+    (error "This only works if the current mode is in Oddmuse Mode."))
+  (erase-buffer); in case of current-prefix-arg
+  (oddmuse-run "Loading" oddmuse-get-command oddmuse-wiki oddmuse-page-name)
+  (oddmuse-revision-put oddmuse-wiki oddmuse-page-name (oddmuse-get-latest-revision oddmuse-wiki oddmuse-page-name))
+  ;; fix mode-line for VC in the new buffer because this is not a vc-checkout
+  (vc-mode-line buffer-file-name 'oddmuse))
 
 ;;;###autoload
 (defun oddmuse-new (wiki pagename)
@@ -1067,7 +1078,7 @@ node as returned by `libxml-parse-html-region' or
       (when (listp child)
 	(let ((result (oddmuse-find-node test child)))
 	  (when result
-	    (return result)))))))
+	    (cl-return result)))))))
 
 ;;;###autoload
 (defun oddmuse-search (regexp)
